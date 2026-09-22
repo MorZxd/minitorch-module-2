@@ -53,10 +53,6 @@ class TensorBackend:
         Args:
             ops : tensor operations object see `tensor_ops.py`
 
-
-        Returns :
-            A collection of tensor functions
-
         """
 
         # Maps
@@ -110,12 +106,9 @@ class SimpleOps(TensorOps):
 
         Args:
             fn: function from float-to-float to apply.
-            a (:class:`TensorData`): tensor to map over
-            out (:class:`TensorData`): optional, tensor data to fill in,
-                   should broadcast with `a`
 
         Returns:
-            new tensor data
+            A function that maps a tensor into an optional output tensor.
         """
 
         f = tensor_map(fn)
@@ -153,11 +146,9 @@ class SimpleOps(TensorOps):
 
         Args:
             fn: function from two floats-to-float to apply
-            a (:class:`TensorData`): tensor to zip over
-            b (:class:`TensorData`): tensor to zip over
 
         Returns:
-            :class:`TensorData` : new tensor data
+            A function that combines two tensors elementwise.
         """
 
         f = tensor_zip(fn)
@@ -193,11 +184,10 @@ class SimpleOps(TensorOps):
 
         Args:
             fn: function from two floats-to-float to apply
-            a (:class:`TensorData`): tensor to reduce over
-            dim (int): int of dim to reduce
+            start: initial value for the reduction
 
         Returns:
-            :class:`TensorData` : new tensor
+            A function that reduces a tensor along a dimension.
         """
         f = tensor_reduce(fn)
 
@@ -243,15 +233,9 @@ def tensor_map(fn: Callable[[float], float]) -> Any:
 
     Args:
         fn: function from float-to-float to apply
-        out (array): storage for out tensor
-        out_shape (array): shape for out tensor
-        out_strides (array): strides for out tensor
-        in_storage (array): storage for in tensor
-        in_shape (array): shape for in tensor
-        in_strides (array): strides for in tensor
 
     Returns:
-        None : Fills in `out`
+        A function that fills the output storage with mapped values.
     """
 
     def _map(
@@ -294,18 +278,9 @@ def tensor_zip(fn: Callable[[float, float], float]) -> Any:
 
     Args:
         fn: function mapping two floats to float to apply
-        out (array): storage for `out` tensor
-        out_shape (array): shape for `out` tensor
-        out_strides (array): strides for `out` tensor
-        a_storage (array): storage for `a` tensor
-        a_shape (array): shape for `a` tensor
-        a_strides (array): strides for `a` tensor
-        b_storage (array): storage for `b` tensor
-        b_shape (array): shape for `b` tensor
-        b_strides (array): strides for `b` tensor
 
     Returns:
-        None : Fills in `out`
+        A function that fills the output storage with combined values.
     """
 
     def _zip(
@@ -344,16 +319,9 @@ def tensor_reduce(fn: Callable[[float, float], float]) -> Any:
 
     Args:
         fn: reduction function mapping two floats to float
-        out (array): storage for `out` tensor
-        out_shape (array): shape for `out` tensor
-        out_strides (array): strides for `out` tensor
-        a_storage (array): storage for `a` tensor
-        a_shape (array): shape for `a` tensor
-        a_strides (array): strides for `a` tensor
-        reduce_dim (int): dimension to reduce out
 
     Returns:
-        None : Fills in `out`
+        A function that fills the output storage with reduced values.
     """
 
     def _reduce(

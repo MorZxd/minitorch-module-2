@@ -85,8 +85,6 @@ def broadcast_index(
         shape : tensor shape of smaller tensor
         out_index : multidimensional index of smaller tensor
 
-    Returns:
-        None
     """
     # TODO: Implement for Task 2.2.
     offset = len(big_shape) - len(shape)
