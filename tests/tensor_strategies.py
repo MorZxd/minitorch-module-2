@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from hypothesis import settings
 from hypothesis.strategies import (
@@ -59,7 +59,7 @@ def tensor_data(
 
 
 @composite
-def indices(draw: DrawFn, layout: Tensor) -> UserIndex:
+def indices(draw: DrawFn, layout: Union[Tensor, TensorData]) -> UserIndex:
     return tuple((draw(integers(min_value=0, max_value=s - 1)) for s in layout.shape))
 
 

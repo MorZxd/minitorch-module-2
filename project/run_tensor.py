@@ -3,6 +3,8 @@ Be sure you have minitorch installed in you Virtual Env.
 >>> pip install -Ue .
 """
 
+import time
+
 import minitorch
 
 
@@ -22,7 +24,9 @@ class Network(minitorch.Module):
 
     def forward(self, x):
         # TODO: Implement for Task 2.5.
-        raise NotImplementedError("Need to implement for Task 2.5")
+        x = self.layer1.forward(x).relu()
+        x = self.layer2.forward(x).relu()
+        return self.layer3.forward(x).sigmoid()
 
 
 class Linear(minitorch.Module):
@@ -34,7 +38,11 @@ class Linear(minitorch.Module):
 
     def forward(self, x):
         # TODO: Implement for Task 2.5.
-        raise NotImplementedError("Need to implement for Task 2.5")
+        batch, in_size = x.shape
+        weights = self.weights.value
+        return (
+            x.view(batch, in_size, 1) * weights.view(1, in_size, self.out_size)
+        ).sum(1).view(batch, self.out_size) + self.bias.value
 
 
 def default_log_fn(epoch, total_loss, correct, losses):
@@ -63,7 +71,9 @@ class TensorTrain:
         y = minitorch.tensor(data.y)
 
         losses = []
+        elapsed = 0.0
         for epoch in range(1, self.max_epochs + 1):
+            start = time.perf_counter()
             total_loss = 0.0
             correct = 0
             optim.zero_grad()
@@ -80,11 +90,14 @@ class TensorTrain:
             # Update
             optim.step()
 
+            elapsed += time.perf_counter() - start
+
             # Logging
             if epoch % 10 == 0 or epoch == max_epochs:
                 y2 = minitorch.tensor(data.y)
                 correct = int(((out.detach() > 0.5) == y2).sum()[0])
                 log_fn(epoch, total_loss, correct, losses)
+                print(f"Time per epoch: {elapsed / epoch:.3f} s")
 
 
 if __name__ == "__main__":
